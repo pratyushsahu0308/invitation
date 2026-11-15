@@ -484,7 +484,15 @@ if(document.body.classList.contains('lock')){var mo=new MutationObserver(functio
 var a=document.getElementById('bgm'),fd=false;
 if(a){a.volume=0;function fade(){if(fd)return;fd=true;var v=0,t=setInterval(function(){v=Math.min(.8,v+.04);a.volume=v;if(v>=.8)clearInterval(t)},120)}
 a.addEventListener('volumechange',function(){if(!a.muted&&!a.paused)fade()});a.addEventListener('playing',function(){if(!a.muted)fade()})}
-var env=document.getElementById('env');if(env)env.addEventListener('click',function(){try{navigator.vibrate&&navigator.vibrate(30)}catch(e){}});
+var env=document.getElementById('env');if(env)env.addEventListener('click',function(){try{if(!navigator.vibrate)return;if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches){navigator.vibrate(30);return}
+/* haptics timed to the opening: seal snap -> flap rumble -> letter slide ticks -> scroll unroll -> final tap */
+var p=[45,305];
+for(var i=0;i<10;i++)p.push(50,50);
+for(var j=0;j<12;j++)p.push(20,130);
+p.push(350);
+for(var k=0;k<20;k++)p.push(18,102);
+p.push(900,40,70,40);
+navigator.vibrate(p)}catch(e){}});
 var u=document.createElement('button');u.id='up';u.type='button';u.setAttribute('aria-label','Back to top');u.innerHTML='<svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg>';document.body.appendChild(u);
 u.onclick=function(){window.scrollTo({top:0,behavior:'smooth'})};
 function sh(){u.classList.toggle('on',!document.body.classList.contains('lock')&&window.scrollY>window.innerHeight*1.2)}
